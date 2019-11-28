@@ -1,3 +1,5 @@
+import inquirer as inquirer
+
 from Piece import Pawn, King, GoldGeneral, SilverGeneral, Knight, Lance, Rook, \
     Bishop, Piece
 
@@ -298,20 +300,95 @@ turn = "w"
 while True:
     b.print_board()
     print(f"Turn: #{turn_count} {turn}\n")
-    print(f"Which piece do you wish to move (row col): ")
-    from_row = input()
-    from_col = input()
-    try:
-        piece = b.check_piece(int(from_row), int(from_col))
-        print(f"Where do you want to move your piece (row col): ")
-        to_row = input()
-        to_col = input()
+    if turn == "w" and not b.white_captured:
+        print(f"Which piece do you wish to move: ")
+        from_row = int(input("Row: "))
+        from_col = int(input("Column: "))
+        try:
+            piece = b.check_piece(from_row, from_col)
+            print(f"Where do you want to move your piece (row col): ")
+            to_row = int(input("Row: "))
+            to_col = int(input("Column: "))
 
-        b.move_piece(piece, int(to_row), int(to_col), int(from_row), int(from_col))
-        turn = "w" if turn == "b" else "b"
-        turn_count += 1
-    except Exception as e:
-        print(f"\033[91m{e}\033[00m")
-        print(f"Click enter to choose again.")
-        input()
-        continue
+            b.move_piece(piece, to_row, to_col, from_row, from_col)
+            turn = "w" if turn == "b" else "b"
+            turn_count += 1
+        except Exception as e:
+            print(f"\033[91m{e}\033[00m")
+            print(f"\033[91mClick enter to choose again.\033[00m")
+            input()
+            continue
+    elif turn == "b" and not b.black_captured:
+        print(f"Which piece do you wish to move: ")
+        from_row = int(input("Row: "))
+        from_col = int(input("Column: "))
+        try:
+            piece = b.check_piece(from_row, from_col)
+            print(f"Where do you want to move your piece (row col): ")
+            to_row = int(input("Row: "))
+            to_col = int(input("Column: "))
+
+            b.move_piece(piece, to_row, to_col, from_row, from_col)
+            turn = "w" if turn == "b" else "b"
+            turn_count += 1
+        except Exception as e:
+            print(f"\033[91m{e}\033[00m")
+            print(f"\033[91mClick enter to choose again.\033[00m")
+            input()
+            continue
+    elif turn == "w" and b.white_captured:
+        question = [inquirer.List("action", "What do you want to do?", ["Move a piece", "Drop a captured piece"])]
+        answer = inquirer.prompt(question)["action"]
+
+        if answer == "Move a piece":
+            print(f"Which piece do you wish to move: ")
+            from_row = int(input("Row: "))
+            from_col = int(input("Column: "))
+            try:
+                piece = b.check_piece(from_row, from_col)
+                print(f"Where do you want to move your piece (row col): ")
+                to_row = int(input("Row: "))
+                to_col = int(input("Column: "))
+
+                b.move_piece(piece, to_row, to_col, from_row, from_col)
+                turn = "w" if turn == "b" else "b"
+                turn_count += 1
+            except Exception as e:
+                print(f"\033[91m{e}\033[00m")
+                print(f"\033[91mClick enter to choose again.\033[00m")
+                input()
+                continue
+        else:
+            # TODO: implement dropping behavior
+            pass
+    elif turn == "b" and b.black_captured:
+        question = [inquirer.List("action", "What do you want to do?",
+                                  ["Move a piece", "Drop a captured piece"])]
+        answer = inquirer.prompt(question)["action"]
+
+        if answer == "Move a piece":
+            print(f"Which piece do you wish to move: ")
+            from_row = int(input("Row: "))
+            from_col = int(input("Column: "))
+            try:
+                piece = b.check_piece(from_row, from_col)
+                print(f"Where do you want to move your piece (row col): ")
+                to_row = int(input("Row: "))
+                to_col = int(input("Column: "))
+
+                b.move_piece(piece, to_row, to_col, from_row, from_col)
+                turn = "w" if turn == "b" else "b"
+                turn_count += 1
+            except Exception as e:
+                print(f"\033[91m{e}\033[00m")
+                print(f"\033[91mClick enter to choose again.\033[00m")
+                input()
+                continue
+        else:
+            # TODO: implement droping behavior
+            pass
+
+
+
+
+
