@@ -5,6 +5,7 @@ class Piece:
     def __init__(self, icon, color):
         self._icon = icon
         self._color = color
+        self._promoted = False
 
     @property
     def color(self):
@@ -29,6 +30,13 @@ class Piece:
         """
         ...
 
+    def promote(self):
+        ...
+
+    def promoted_movement(self, color, from_row=None, to_row=None,
+                            from_col=None, to_col=None):
+        ...
+
     def __repr__(self):
         return f"{self._icon}{self._color}"
 
@@ -47,6 +55,15 @@ class Pawn(Piece):
                 return True
             return False
 
+    def promoted_movement(self, color, from_row=None, to_row=None,
+                            from_col=None, to_col=None) -> bool:
+        return gold_move(color, from_row=from_row, to_row=to_row,
+                         from_col=from_col, to_col=to_col)
+
+    def promote(self):
+        self._promoted = True
+        self._icon = "+P"
+
 
 class King(Piece):
     def __init__(self, color):
@@ -54,7 +71,7 @@ class King(Piece):
 
     def available_positions(self, color, from_row=None, to_row=None,
                             from_col=None, to_col=None) -> bool:
-        if (to_row  == from_row+1 or to_row == from_row-1) and (to_col == from_col+1 or to_col == from_col-1):
+        if (to_row == from_row+1 or to_row == from_row-1) and (to_col == from_col+1 or to_col == from_col-1):
             return True
         elif to_row == from_row+1 or to_row == from_row-1 or to_col == from_col+1 or to_col == from_col-1:
             return True
@@ -79,6 +96,15 @@ class Knight(Piece):
                 return True
             return False
 
+    def promoted_movement(self, color, from_row=None, to_row=None,
+                            from_col=None, to_col=None) -> bool:
+        return gold_move(color, from_row=from_row, to_row=to_row,
+                         from_col=from_col, to_col=to_col)
+
+    def promote(self):
+        self._promoted = True
+        self._icon = "+N"
+
 
 class Rook(Piece):
     def __init__(self, color):
@@ -93,6 +119,10 @@ class Rook(Piece):
         else:
             return False
 
+    def promote(self):
+        self._promoted = True
+        self._icon = "+R"
+
 
 class GoldGeneral(Piece):
     def __init__(self, color):
@@ -100,20 +130,7 @@ class GoldGeneral(Piece):
 
     def available_positions(self, color, from_row=None, to_row=None,
                             from_col=None, to_col=None) -> bool:
-        if color == "b":
-            if to_row == (from_row-1) and (to_col == from_col+1 or to_col == from_col-1):
-                return True
-            elif to_row == from_row-1 or to_row == from_row+1 or to_col == from_col+1 or to_col == from_col-1:
-                return True
-            else:
-                return False
-        else:
-            if to_row == (from_row+1) and (to_col == from_col+1 or to_col == from_col-1):
-                return True
-            elif to_row == from_row-1 or to_row == from_row+1 or to_col == from_col+1 or to_col == from_col-1:
-                return True
-            else:
-                return False
+        return gold_move(color, from_row=from_row, to_row=to_row, from_col=from_col, to_col=to_col)
 
 
 class SilverGeneral(Piece):
@@ -138,6 +155,15 @@ class SilverGeneral(Piece):
             else:
                 return False
 
+    def promoted_movement(self, color, from_row=None, to_row=None,
+                            from_col=None, to_col=None) -> bool:
+        return gold_move(color, from_row=from_row, to_row=to_row,
+                         from_col=from_col, to_col=to_col)
+
+    def promote(self):
+        self._promoted = True
+        self._icon = "+S"
+
 
 class Lance(Piece):
     def __init__(self, color):
@@ -154,6 +180,15 @@ class Lance(Piece):
                 return True
             return False
 
+    def promoted_movement(self, color, from_row=None, to_row=None,
+                            from_col=None, to_col=None) -> bool:
+        return gold_move(color, from_row=from_row, to_row=to_row,
+                         from_col=from_col, to_col=to_col)
+
+    def promote(self):
+        self._promoted = True
+        self._icon = "+S"
+
 
 class Bishop(Piece):
     def __init__(self, color):
@@ -168,6 +203,30 @@ class Bishop(Piece):
         elif to_row < from_row and to_col < from_col:
             return True
         elif to_row > from_row and to_col < from_col:
+            return True
+        else:
+            return False
+
+    def promote(self):
+        self._promoted = True
+        self._icon = "+B"
+
+
+def gold_move(color, from_row=None, to_row=None,
+                            from_col=None, to_col=None) -> bool:
+    if color == "b":
+        if to_row == (from_row - 1) and (
+                to_col == from_col + 1 or to_col == from_col - 1):
+            return True
+        elif to_row == from_row - 1 or to_row == from_row + 1 or to_col == from_col + 1 or to_col == from_col - 1:
+            return True
+        else:
+            return False
+    else:
+        if to_row == (from_row + 1) and (
+                to_col == from_col + 1 or to_col == from_col - 1):
+            return True
+        elif to_row == from_row - 1 or to_row == from_row + 1 or to_col == from_col + 1 or to_col == from_col - 1:
             return True
         else:
             return False

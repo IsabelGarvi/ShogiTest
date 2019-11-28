@@ -63,6 +63,7 @@ class Board:
         icon = piece_to_move.icon
         result = False
         if icon == "P":
+            self.check_promoted(piece_to_move, move_to_row)
             result = piece_to_move.available_positions(piece.color,
                                                        to_row=move_to_row,
                                                        from_row=move_from_row,
@@ -75,6 +76,7 @@ class Board:
                                                        to_col=move_to_col,
                                                        from_col=move_from_col)
         elif icon == "N":
+            self.check_promoted(piece_to_move, move_to_row)
             result = piece_to_move.available_positions(piece.color,
                                                        to_row=move_to_row,
                                                        from_row=move_from_row,
@@ -87,12 +89,14 @@ class Board:
                                                        to_col=move_to_col,
                                                        from_col=move_from_col)
         elif icon == "S":
+            self.check_promoted(piece_to_move, move_to_row)
             result = piece_to_move.available_positions(piece.color,
                                                        to_row=move_to_row,
                                                        from_row=move_from_row,
                                                        to_col=move_to_col,
                                                        from_col=move_from_col)
         elif icon == "L":
+            self.check_promoted(piece_to_move, move_to_row)
             if piece_to_move.color == "w":
                 for i in range(move_from_row+1, move_to_row+1):
                     print(self._board[i][move_to_col])
@@ -110,6 +114,7 @@ class Board:
                                                        to_col=move_to_col,
                                                        from_col=move_from_col)
         elif icon == "R":
+            self.check_promoted(piece_to_move, move_to_row)
             if move_to_col is move_from_col:
                 if move_to_row > move_from_row:
                     for i in range(move_from_row+1, move_to_row+1):
@@ -140,6 +145,7 @@ class Board:
                                                        to_col=move_to_col,
                                                        from_col=move_from_col)
         elif icon == "B":
+            self.check_promoted(piece_to_move, move_to_row)
             if to_row < from_row and to_col > from_col:
                 for i in range(move_from_col+1, move_to_col+1):
                     for j in range(move_from_row+1, move_to_row+1):
@@ -170,7 +176,91 @@ class Board:
                                                        from_row=move_from_row,
                                                        to_col=move_to_col,
                                                        from_col=move_from_col)
+        elif icon == "+B":
+            if move_to_row == move_from_row+1 or move_to_row == move_from_row-1 or move_to_col == move_from_col+1 or move_to_col == move_from_col-1:
+                return True
+            if to_row < from_row and to_col > from_col:
+                for i in range(move_from_col+1, move_to_col+1):
+                    for j in range(move_from_row+1, move_to_row+1):
+                        if self._board[j][i] is not " ":
+                            if self._board[j][i].color is piece_to_move.color:
+                                return result
+            elif to_row > from_row and to_col > from_col:
+                for i in range(move_from_col+1, move_to_col+1):
+                    for j in range(move_from_row-1, move_to_row-1, -1):
+                        if self._board[j][i] is not " ":
+                            if self._board[j][i].color is piece_to_move.color:
+                                return result
+            elif to_row > from_row and to_col < from_col:
+                for i in range(move_from_col-1, move_to_col-1, -1):
+                    for j in range(move_from_row+1, move_to_row+1):
+                        if self._board[j][i] is not " ":
+                            if self._board[j][i].color is piece_to_move.color:
+                                return result
+            elif to_row < from_row and to_col < from_col:
+                for i in range(move_from_col-1, move_to_col-1, -1):
+                    for j in range(move_from_row-1, move_to_row-1, -1):
+                        if self._board[j][i] is not " ":
+                            if self._board[j][i].color is piece_to_move.color:
+                                return result
+
+            result = piece_to_move.available_positions(piece.color,
+                                                       to_row=move_to_row,
+                                                       from_row=move_from_row,
+                                                       to_col=move_to_col,
+                                                       from_col=move_from_col)
+        elif icon == "+R":
+            if (move_to_row == move_from_row + 1 or move_to_row == move_from_row - 1) and (
+                    move_to_col == move_from_col + 1 or move_to_col == move_from_col - 1):
+                return True
+            if to_row < from_row and to_col > from_col:
+                for i in range(move_from_col+1, move_to_col+1):
+                    for j in range(move_from_row+1, move_to_row+1):
+                        if self._board[j][i] is not " ":
+                            if self._board[j][i].color is piece_to_move.color:
+                                return result
+            elif to_row > from_row and to_col > from_col:
+                for i in range(move_from_col+1, move_to_col+1):
+                    for j in range(move_from_row-1, move_to_row-1, -1):
+                        if self._board[j][i] is not " ":
+                            if self._board[j][i].color is piece_to_move.color:
+                                return result
+            elif to_row > from_row and to_col < from_col:
+                for i in range(move_from_col-1, move_to_col-1, -1):
+                    for j in range(move_from_row+1, move_to_row+1):
+                        if self._board[j][i] is not " ":
+                            if self._board[j][i].color is piece_to_move.color:
+                                return result
+            elif to_row < from_row and to_col < from_col:
+                for i in range(move_from_col-1, move_to_col-1, -1):
+                    for j in range(move_from_row-1, move_to_row-1, -1):
+                        if self._board[j][i] is not " ":
+                            if self._board[j][i].color is piece_to_move.color:
+                                return result
+
+            result = piece_to_move.available_positions(piece.color,
+                                                       to_row=move_to_row,
+                                                       from_row=move_from_row,
+                                                       to_col=move_to_col,
+                                                       from_col=move_from_col)
+
+        elif icon == "+P" or icon == "+N" or icon == "+L" or icon == "+S":
+            result = piece_to_move.promoted_movement(piece.color,
+                                                     to_row=move_to_row,
+                                                     from_row=move_from_row,
+                                                     to_col=move_to_col,
+                                                     from_col=move_from_col)
+
         return result
+
+    def check_promoted(self, piece_to_move, move_to_row):
+        """Checks if a piece can be promoted"""
+        if piece_to_move.color == "w":
+            if move_to_row > 6:
+                piece_to_move.promote()
+        else:
+            if move_to_row < 3:
+                piece_to_move.promote()
 
     def capture_piece(self, piece_to_move, move_to_row, move_to_col):
         if piece_to_move.color == "w":
