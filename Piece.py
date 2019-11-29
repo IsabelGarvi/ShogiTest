@@ -18,6 +18,7 @@ class Piece:
     @abstractmethod
     def available_positions(self, color, from_row=None, to_row=None, from_col=None, to_col=None):
         """Check if a piece can make that move.
+
         Args:
             color: color of the piece
             from_row: row from where the piece wants to move
@@ -31,10 +32,23 @@ class Piece:
         ...
 
     def promote(self):
+        """Promotes the piece."""
         ...
 
     def promoted_movement(self, color, from_row=None, to_row=None,
                             from_col=None, to_col=None):
+        """Checks if a piece can make a movement when promoted.
+
+        Args:
+            color: color of the piece
+            from_row: row from where the piece wants to move
+            to_row: row to where the piece wants to move
+            from_col: column from where the piece wants to move
+            to_col: column to where the piece wants to move
+
+        Returns:
+            Whether the piece can make the move.
+        """
         ...
 
     def __repr__(self):
@@ -110,15 +124,6 @@ class Rook(Piece):
     def __init__(self, color):
         super().__init__("R", color)
 
-    def available_positions(self, color, from_row=None, to_row=None,
-                            from_col=None, to_col=None) -> bool:
-        if (to_row > from_row or to_row < from_row) and to_col == from_col:
-            return True
-        elif (to_col > from_col or to_col < from_col) and to_row == from_row:
-            return True
-        else:
-            return False
-
     def promote(self):
         self._promoted = True
         self._icon = "+R"
@@ -169,17 +174,6 @@ class Lance(Piece):
     def __init__(self, color):
         super().__init__("L", color)
 
-    def available_positions(self, color, from_row=None, to_row=None,
-                            from_col=None, to_col=None) -> bool:
-        if color == "b":
-            if to_col == from_col and to_row < from_row:
-                return True
-            return False
-        else:
-            if to_col == from_col and to_row > from_row:
-                return True
-            return False
-
     def promoted_movement(self, color, from_row=None, to_row=None,
                             from_col=None, to_col=None) -> bool:
         return gold_move(color, from_row=from_row, to_row=to_row,
@@ -193,19 +187,6 @@ class Lance(Piece):
 class Bishop(Piece):
     def __init__(self, color):
         super().__init__("B", color)
-
-    def available_positions(self, color, from_row=None, to_row=None,
-                            from_col=None, to_col=None) -> bool:
-        if to_row > from_row and to_col > from_col:
-            return True
-        elif to_row < from_row and to_col > from_col:
-            return True
-        elif to_row < from_row and to_col < from_col:
-            return True
-        elif to_row > from_row and to_col < from_col:
-            return True
-        else:
-            return False
 
     def promote(self):
         self._promoted = True
