@@ -165,7 +165,6 @@ class Board:
                             return True, move_to_row, move_to_col
                 else:
                     for i in range(move_from_row-1, move_to_row-1, -1):
-                        print(self._board[i][move_to_col])
                         if self._board[i][move_to_col] is not " ":
                             if self._board[i][move_to_col].color is piece_to_move.color:
                                 raise Exception(f"There's a piece of your color in the way -> {self._board[i][move_to_col]}")
@@ -223,7 +222,6 @@ class Board:
                         return True, move_to_row, move_to_col
             elif move_to_row > move_from_row and move_to_col < move_from_col:
                 for i, j in zip(range(move_from_col-1, move_to_col-1, -1), range(move_from_row+1, move_to_row+1)):
-                    print(f"Checking: {j} {i}")
                     if self._board[j][i] is not " ":
                         if self._board[j][i].color is piece_to_move.color:
                             raise Exception(
@@ -274,7 +272,6 @@ class Board:
                         return True, move_to_row, move_to_col
             elif move_to_row > move_from_row and move_to_col < move_from_col:
                 for i, j in zip(range(move_from_col-1, move_to_col-1, -1), range(move_from_row+1, move_to_row+1)):
-                    print(f"Checking: {j} {i}")
                     if self._board[j][i] is not " ":
                         if self._board[j][i].color is piece_to_move.color:
                             raise Exception(
@@ -315,7 +312,6 @@ class Board:
                             return True, move_to_row, move_to_col
                 else:
                     for i in range(move_from_row-1, move_to_row-1, -1):
-                        print(self._board[i][move_to_col])
                         if self._board[i][move_to_col] is not " ":
                             if self._board[i][move_to_col].color is piece_to_move.color:
                                 raise Exception(f"There's a piece of your color in the way -> {self._board[i][move_to_col]}")
@@ -358,18 +354,33 @@ class Board:
 
     @staticmethod
     def check_promotion(piece_to_move, move_to_row) -> None:
-        """Checks if a piece can be promoted and if it can, it promotes it.
+        """Checks if a piece can be promoted and if it can, it automatically
+        promotes it.
 
         Args:
             piece_to_move: piece up for promotion.
             move_to_row: row to check.
         """
         if piece_to_move.color == "w":
-            if move_to_row > 6:
-                piece_to_move.promote()
+            if piece_to_move.icon == "P" or piece_to_move.icon == "L":
+                if move_to_row == 8:
+                    piece_to_move.prote()
+            elif piece_to_move.icon == "N":
+                if move_to_row >= 7:
+                    piece_to_move.prote()
+            else:
+                if move_to_row > 6:
+                    piece_to_move.promote()
         else:
-            if move_to_row < 3:
-                piece_to_move.promote()
+            if piece_to_move.icon == "P" or piece_to_move.icon == "L":
+                if move_to_row == 0:
+                    piece_to_move.prote()
+            elif piece_to_move.icon == "N":
+                if move_to_row <= 1:
+                    piece_to_move.prote()
+            else:
+                if move_to_row < 3:
+                    piece_to_move.promote()
 
     def capture_piece(self, piece_to_move, move_to_row, move_to_col) -> None:
         """Adds the rival piece to the captured list of the turn in play.
@@ -395,9 +406,7 @@ class Board:
             move_from_row: row from where the player wants to move the piece.
             move_from_col: column from where the player wants to move the piece.
         """
-        new_pos = self._board[move_to_row][move_to_col]
         able_to_move, move_to_row, move_to_col = self.check_available_moves(piece_to_move, move_to_row, move_to_col, move_from_row, move_from_col)
-        print(able_to_move)
         new_pos = self._board[move_to_row][move_to_col]
         if new_pos is " ":
             if able_to_move:
@@ -414,3 +423,25 @@ class Board:
                 raise Exception("This movement can not be done.")
         else:
             raise Exception("This position already has a piece of your color in")
+
+    def check_drop_place(self, piece_to_drop, drop_to_row, drop_to_col):
+        result = False
+        if self._board[drop_to_row][drop_to_col] is " ":
+            if piece_to_drop.icon is "P":
+                if (piece_to_drop.color is "b" and drop_to_row == 0) or (piece_to_drop.color is "w" and drop_to_row == 8):
+                    raise Exception("You cannot drop a pawn to a last row.")
+                else:
+                    for i in range(0, 9):
+                        if self._board[i][drop_to_col] is not " ":
+                            if self._board[i][drop_to_col].icon is "P" and self._board[i][drop_to_col].color is piece_to_drop.color:
+                                raise Exception("You can not drop the pawn here")
+                            else:
+                                result = True
+            else:
+                raise Exception("This behavior is not yet implemented. Sorry :(")
+        else:
+            raise Exception("You cannot drop a piece to an occupied position.")
+        return result
+
+    def drop_piece(self, piece_to_drop, drop_to_row, drop_to_col):
+        self._board[drop_to_row][drop_to_col] = piece_to_drop

@@ -1,5 +1,3 @@
-from typing import Sequence
-
 import inquirer as inquirer
 from Board import Board
 
@@ -22,7 +20,7 @@ while True:
             from_col = int(input("Column: "))
             try:
                 piece = b.check_piece(from_row, from_col, turn)
-                print(f"Where do you want to move your piece (row col): ")
+                print(f"Where do you want to move your piece: ")
                 to_row = int(input("Row: "))
                 to_col = int(input("Column: "))
 
@@ -46,7 +44,7 @@ while True:
                 from_col = int(input("Column: "))
                 try:
                     piece = b.check_piece(from_row, from_col, turn)
-                    print(f"Where do you want to move your piece (row col): ")
+                    print(f"Where do you want to move your piece: ")
                     to_row = int(input("Row: "))
                     to_col = int(input("Column: "))
 
@@ -62,12 +60,29 @@ while True:
                 options = b.white_captured.copy()
                 options.append('Cancel')
                 question = [
-                    inquirer.List("place", "What piece do you want to use?",
+                    inquirer.List("piece", "What piece do you want to use?",
                                   options)]
-                answer = inquirer.prompt(question)["place"]
-                if answer is not 'Cancel':
-                    b.white_captured.remove(answer)
-                pass
+                selected_piece = inquirer.prompt(question)["piece"]
+                if selected_piece is not 'Cancel':
+                    print(f"Where do you want to move your piece: ")
+                    to_row = int(input("Row: "))
+                    to_col = int(input("Column: "))
+                    selected_piece.change_color()
+                    try:
+                        drop = b.check_drop_place(selected_piece, to_row,
+                                                  to_col)
+                        if drop:
+                            selected_piece.change_color()
+                            b.white_captured.remove(selected_piece)
+                            selected_piece.change_color()
+                            b.drop_piece(selected_piece, to_row, to_col)
+                            turn = "w" if turn == "b" else "b"
+                            turn_count += 1
+                    except Exception as e:
+                        print(f"\033[91m{e}\033[00m")
+                        print(f"\033[91mClick enter to choose again.\033[00m")
+                        input()
+                        continue
     else:
         if not b.black_captured:
             print(f"Which piece do you wish to move: ")
@@ -75,7 +90,7 @@ while True:
             from_col = int(input("Column: "))
             try:
                 piece = b.check_piece(from_row, from_col, turn)
-                print(f"Where do you want to move your piece (row col): ")
+                print(f"Where do you want to move your piece: ")
                 to_row = int(input("Row: "))
                 to_col = int(input("Column: "))
 
@@ -99,7 +114,7 @@ while True:
                 from_col = int(input("Column: "))
                 try:
                     piece = b.check_piece(from_row, from_col, turn)
-                    print(f"Where do you want to move your piece (row col): ")
+                    print(f"Where do you want to move your piece: ")
                     to_row = int(input("Row: "))
                     to_col = int(input("Column: "))
 
@@ -115,10 +130,27 @@ while True:
                 options = b.black_captured.copy()
                 options.append('Cancel')
                 question = [
-                    inquirer.List("place", "What piece do you want to use?",
+                    inquirer.List("piece", "What piece do you want to use?",
                                   options)]
-                answer = inquirer.prompt(question)["place"]
-                if answer is not 'Cancel':
-                    b.black_captured.remove(answer)
+                selected_piece = inquirer.prompt(question)["piece"]
+                if selected_piece is not 'Cancel':
+                    print(f"Where do you want to move your piece: ")
+                    to_row = int(input("Row: "))
+                    to_col = int(input("Column: "))
+                    selected_piece.change_color()
+                    try:
+                        drop = b.check_drop_place(selected_piece, to_row, to_col)
+                        if drop:
+                            b.drop_piece(selected_piece, to_row, to_col)
+                            selected_piece.change_color()
+                            b.black_captured.remove(selected_piece)
+                            selected_piece.change_color()
+                            turn = "w" if turn == "b" else "b"
+                            turn_count += 1
+                    except Exception as e:
+                        print(f"\033[91m{e}\033[00m")
+                        print(f"\033[91mClick enter to choose again.\033[00m")
+                        input()
+                        continue
                 else:
                     continue

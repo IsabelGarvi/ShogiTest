@@ -51,6 +51,11 @@ class Piece:
         """
         ...
 
+    def change_color(self):
+        """Changes the color of a piece.
+        """
+        self._color = "w" if self._color == "b" else "b"
+
     def __repr__(self):
         return f"{self._icon}{self._color}"
 
