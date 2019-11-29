@@ -3,11 +3,11 @@ Shogi is a Japanese Chess.
 
 Implemented functionality:
 - Pieces movement.
-- Pawn and Lance automatically promoted when reaching last rank of the 
+- Pawn and Lance are automatically promoted when reaching last rank of the 
 furthest side.
-- Knight automatically promoted when reaching last two ranks of the 
+- Knight is automatically promoted when reaching last two ranks of the 
 furthest side.
-- Other piece (that can be promoted) automatically promoted when 
+- Other pieces (that can be promoted) are automatically promoted when 
 reaching last three ranks of the furthest side.
 - Promoted pieces movement.
 - Select if player wants to use a captured piece (if it has any)
