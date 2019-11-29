@@ -21,7 +21,7 @@ while True:
             from_row = int(input("Row: "))
             from_col = int(input("Column: "))
             try:
-                piece = b.check_piece(from_row, from_col)
+                piece = b.check_piece(from_row, from_col, turn)
                 print(f"Where do you want to move your piece (row col): ")
                 to_row = int(input("Row: "))
                 to_col = int(input("Column: "))
@@ -45,7 +45,7 @@ while True:
                 from_row = int(input("Row: "))
                 from_col = int(input("Column: "))
                 try:
-                    piece = b.check_piece(from_row, from_col)
+                    piece = b.check_piece(from_row, from_col, turn)
                     print(f"Where do you want to move your piece (row col): ")
                     to_row = int(input("Row: "))
                     to_col = int(input("Column: "))
@@ -74,7 +74,7 @@ while True:
             from_row = int(input("Row: "))
             from_col = int(input("Column: "))
             try:
-                piece = b.check_piece(from_row, from_col)
+                piece = b.check_piece(from_row, from_col, turn)
                 print(f"Where do you want to move your piece (row col): ")
                 to_row = int(input("Row: "))
                 to_col = int(input("Column: "))
@@ -98,7 +98,7 @@ while True:
                 from_row = int(input("Row: "))
                 from_col = int(input("Column: "))
                 try:
-                    piece = b.check_piece(from_row, from_col)
+                    piece = b.check_piece(from_row, from_col, turn)
                     print(f"Where do you want to move your piece (row col): ")
                     to_row = int(input("Row: "))
                     to_col = int(input("Column: "))

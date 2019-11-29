@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from Piece import Pawn, King, GoldGeneral, SilverGeneral, Knight, Lance, Rook, \
     Bishop, Piece
 
@@ -52,13 +54,14 @@ class Board:
         print(f"Captured: {self.black_captured}")
         print("============Black==========")
 
-    def check_piece(self, move_from_row, move_from_col):
+    def check_piece(self, move_from_row, move_from_col, turn):
         """Checks if there is the piece in the selected position has a piece
         and if there is one in it, check if it's the same color as the player.
 
         Args:
             move_from_row: row from where the player wants to move the piece.
             move_from_col: column from where the player wants to move the piece.
+            turn: turn in play
 
         Returns:
             The selected piece.
@@ -119,12 +122,14 @@ class Board:
                                                        from_col=move_from_col)
         elif icon == "L":
             self.check_promotion(piece_to_move, move_to_row)
-            if to_col is not from_col:
-                return False
+            if move_to_col is not move_from_col:
+                raise Exception("Lance can only move forwards")
             else:
                 if piece_to_move.color == "w":
                     if move_to_row < move_from_row:
-                        return False
+                        raise Exception("Lance can only move forwards")
+                    if move_to_row is move_from_row+1:
+                        return True, move_to_row, move_to_col
                     for i in range(move_from_row+1, move_to_row+1):
                         if self._board[i][move_to_col] is not " ":
                             if self._board[i][move_to_col] is not piece_to_move.color:
@@ -134,8 +139,10 @@ class Board:
                                 raise Exception(f"There's a piece of your color in the way -> {self._board[i][move_to_col]}")
                 else:
                     if move_to_row > move_from_row:
-                        return False
-                    for i in range(move_to_row, move_from_row-1):
+                        raise Exception("Lance can only move forwards")
+                    if move_to_row is move_from_row-1:
+                        return True, move_to_row, move_to_col
+                    for i in range(move_from_row-1, move_to_row-1, -1):
                         if self._board[i][move_to_col] == " ":
                             if self._board[i][move_to_col] is not piece_to_move.color:
                                 move_to_row = i
@@ -192,7 +199,7 @@ class Board:
                 return False
         elif icon == "B":
             self.check_promotion(piece_to_move, move_to_row)
-            if to_row < from_row and to_col > from_col:
+            if move_to_row < move_from_row and move_to_col > move_from_col:
                 for i, j in zip(range(move_from_col+1, move_to_col+1), range(move_from_row-1, move_to_row-1, -1)):
                     if self._board[j][i] is not " ":
                         if self._board[j][i].color is piece_to_move.color:
@@ -203,7 +210,7 @@ class Board:
                             return True, move_to_row, move_to_col
                     else:
                         return True, move_to_row, move_to_col
-            elif to_row > from_row and to_col > from_col:
+            elif move_to_row > move_from_row and move_to_col > move_from_col:
                 for i, j in zip(range(move_from_col+1, move_to_col+1), range(move_from_row+1, move_to_row+1)):
                     if self._board[j][i] is not " ":
                         if self._board[j][i].color is piece_to_move.color:
@@ -214,7 +221,7 @@ class Board:
                             return True, move_to_row, move_to_col
                     else:
                         return True, move_to_row, move_to_col
-            elif to_row > from_row and to_col < from_col:
+            elif move_to_row > move_from_row and move_to_col < move_from_col:
                 for i, j in zip(range(move_from_col-1, move_to_col-1, -1), range(move_from_row+1, move_to_row+1)):
                     print(f"Checking: {j} {i}")
                     if self._board[j][i] is not " ":
@@ -227,7 +234,7 @@ class Board:
                             return True, move_to_row, move_to_col
                     else:
                         return True, move_to_row, move_to_col
-            elif to_row < from_row and to_col < from_col:
+            elif move_to_row < move_from_row and move_to_col < move_from_col:
                 for i, j in zip(range(move_from_col-1, move_to_col-1, -1), range(move_from_row-1, move_to_row-1, -1)):
                     if self._board[j][i] is not " ":
                         if self._board[j][i].color is piece_to_move.color:
@@ -243,7 +250,7 @@ class Board:
         elif icon == "+B":
             if move_to_row == move_from_row+1 or move_to_row == move_from_row-1 or move_to_col == move_from_col+1 or move_to_col == move_from_col-1:
                 return True, move_to_row, move_to_col
-            elif to_row < from_row and to_col > from_col:
+            elif move_to_row < move_from_row and move_to_col > move_from_col:
                 for i, j in zip(range(move_from_col+1, move_to_col+1), range(move_from_row+1, move_to_row+1)):
                     if self._board[j][i] is not " ":
                         if self._board[j][i].color is piece_to_move.color:
@@ -254,7 +261,7 @@ class Board:
                             return True, move_to_row, move_to_col
                     else:
                         return True, move_to_row, move_to_col
-            elif to_row > from_row and to_col > from_col:
+            elif move_to_row > move_from_row and move_to_col > move_from_col:
                 for i, j in zip(range(move_from_col+1, move_to_col+1), range(move_from_row-1, move_to_row-1, -1)):
                     if self._board[j][i] is not " ":
                         if self._board[j][i].color is piece_to_move.color:
@@ -265,7 +272,7 @@ class Board:
                             return True, move_to_row, move_to_col
                     else:
                         return True, move_to_row, move_to_col
-            elif to_row > from_row and to_col < from_col:
+            elif move_to_row > move_from_row and move_to_col < move_from_col:
                 for i, j in zip(range(move_from_col-1, move_to_col-1, -1), range(move_from_row+1, move_to_row+1)):
                     print(f"Checking: {j} {i}")
                     if self._board[j][i] is not " ":
@@ -278,7 +285,7 @@ class Board:
                             return True, move_to_row, move_to_col
                     else:
                         return True, move_to_row, move_to_col
-            elif to_row < from_row and to_col < from_col:
+            elif move_to_row < move_from_row and move_to_col < move_from_col:
                 for i, j in zip(range(move_from_col-1, move_to_col-1, -1), range(move_from_row-1, move_to_row-1, -1)):
                     if self._board[j][i] is not " ":
                         if self._board[j][i].color is piece_to_move.color:
@@ -390,6 +397,8 @@ class Board:
         """
         new_pos = self._board[move_to_row][move_to_col]
         able_to_move, move_to_row, move_to_col = self.check_available_moves(piece_to_move, move_to_row, move_to_col, move_from_row, move_from_col)
+        print(able_to_move)
+        new_pos = self._board[move_to_row][move_to_col]
         if new_pos is " ":
             if able_to_move:
                 self._board[move_to_row][move_to_col] = piece_to_move
